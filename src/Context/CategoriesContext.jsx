@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 const CategoriesContext = createContext(null);
 const CategoriesDispatchContext = createContext(null);
@@ -14,7 +14,15 @@ function categoriesReducer(categories, action) {
 }
 
 export function CategoriesProvider({ children }) {
-  const [categories, dispatch] = useReducer(categoriesReducer, []);
+  const initialCategories =
+    JSON.parse(localStorage.getItem("categories")) || [];
+  const [categories, dispatch] = useReducer(
+    categoriesReducer,
+    initialCategories
+  );
+  useEffect(() => {
+    localStorage.setItem("products", JSON.stringify(categories));
+  }, [categories]);
   return (
     <CategoriesContext.Provider value={categories}>
       <CategoriesDispatchContext.Provider value={dispatch}>
